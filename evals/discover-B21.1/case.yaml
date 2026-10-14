@@ -1,0 +1,31 @@
+schema_version: '1.1'
+name: discover:B21.1
+description: Answers from both places (features/discover.feature @B21.1)
+tags:
+- discover
+- R21
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: '/bdd:discover docs/discovery/2026-10-13-workouts.md I edited R3 in the file. F2: no, only admins move athletes between groups.'
+  max_turns: 15
+graders:
+- name: file-edit-kept
+  type: regex
+  pattern: Only admins and the group's own coach can delete workouts
+  target:
+    source: file
+    path: docs/discovery/2026-10-13-workouts.md
+- name: chat-answer-folded-in
+  type: regex
+  pattern: '### R\d+ [^\n]*(?:admins?[^\n]*move|move[^\n]*admin)'
+  flags: i
+  target:
+    source: file
+    path: docs/discovery/2026-10-13-workouts.md
+- name: f2-struck
+  type: regex
+  pattern: ~~F2~~
+  target:
+    source: file
+    path: docs/discovery/2026-10-13-workouts.md

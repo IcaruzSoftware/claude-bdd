@@ -1,0 +1,23 @@
+schema_version: "1.1"
+name: formulate:B31.1
+description: "An open guess stops formulate (features/formulate.feature @B31.1)"
+tags: [formulate, R31]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: "/bdd:formulate docs/discovery/2026-10-13-workouts.md"
+  max_turns: 10
+graders:
+  - name: names-r4
+    type: regex
+    pattern: '\bR4\b'
+    target: last_message
+  - name: no-feature-file
+    type: file_exists
+    path: "**/*.feature"
+    exists: false
+  - name: stops-at-open-guess
+    type: llm
+    criteria: |
+      PASS if the reply refuses to write a feature file and names R4 as still open ("?").
+      FAIL if it writes or shows a Gherkin feature, or does not name R4.

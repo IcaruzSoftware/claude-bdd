@@ -1,0 +1,35 @@
+schema_version: "1.1"
+name: automate:B58.1
+description: "A project with its own test rules (features/automate.feature @B58.1)"
+tags: [automate, R58]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: '/bdd:automate --backward features/billing.feature'
+  max_turns: 20
+  timeout_seconds: 420
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit]
+graders:
+  - name: names-example
+    type: regex
+    target: {source: file, path: tests/test_billing.py}
+    pattern: 'billing:B2\.1'
+    match: contains
+  - name: no-private-helper-no-mock
+    type: regex
+    target: {source: file, path: tests/test_billing.py}
+    pattern: '\b_hourly_rate\b|\b_line\b|mock'
+    flags: 'i'
+    match: not_contains
+  - name: boundary-test
+    type: llm
+    focus: trace
+    criteria: |
+      The project's CLAUDE.md requires boundary tests at the derived seam
+      billing.service.draft_invoice: realistic business input in, business result out,
+      no private helpers, no mocks of own code, one file per feature as plain pytest functions.
+      PASS if the new test for example B2.1 calls draft_invoice with Mia's 2 standard hours and
+      1 senior hour, asserts that the draft's total is 390, mentions "billing:" plus
+      "B2.1", and sits in tests/test_billing.py next to the B1.1 test in the same style.
+      FAIL if it calls _line or _hourly_rate, mocks anything, asserts something the example does not
+      say, or lives in another file.

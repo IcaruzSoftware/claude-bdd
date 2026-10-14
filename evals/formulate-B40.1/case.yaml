@@ -1,0 +1,20 @@
+schema_version: '1.1'
+name: formulate:B40.1
+description: A module of a monorepo (features/formulate.feature @B40.1)
+tags:
+- formulate
+- R40
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: /bdd:formulate docs/discovery/2026-10-13-invoice-assistant.md
+  max_turns: 15
+graders:
+- name: feature-in-module
+  type: file_exists
+  path: billing_assistant/features/*.feature
+  exists: true
+- name: nothing-in-root-features
+  type: file_exists
+  path: features/**
+  exists: false

@@ -1,0 +1,26 @@
+schema_version: '1.1'
+name: formulate:B37.1
+description: An English repo (features/formulate.feature @B37.1)
+tags:
+- formulate
+- R37
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: /bdd:formulate docs/discovery/2026-10-13-workouts.md
+  max_turns: 15
+graders:
+- name: english-keywords
+  type: regex
+  pattern: '^Feature:[\s\S]*^\s*Rule:[\s\S]*^\s*(?:Example|Scenario):[\s\S]*^\s*Given '
+  flags: m
+  target:
+    source: file
+    path: features/workouts.feature
+- name: no-language-header
+  type: regex
+  pattern: '#\s*language:'
+  match: not_contains
+  target:
+    source: file
+    path: features/workouts.feature

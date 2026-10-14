@@ -1,0 +1,17 @@
+schema_version: "1.1"
+name: automate:B52.2
+description: "A missing scenario (features/automate.feature @B52.2)"
+tags: [automate, R52]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: '/bdd:automate features/sharing.feature'
+  max_turns: 20
+  timeout_seconds: 420
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit]
+graders:
+  - name: reports-missing-example
+    type: regex
+    target: last_message
+    pattern: '\bB2\.3\b'
+    match: contains

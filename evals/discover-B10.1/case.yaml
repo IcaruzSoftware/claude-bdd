@@ -1,0 +1,33 @@
+schema_version: '1.1'
+name: discover:B10.1
+description: An answer given in chat is folded in (features/discover.feature @B10.1)
+tags:
+- discover
+- R10
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: '/bdd:discover docs/discovery/2026-10-13-workouts.md R3: no, only admins'
+  max_turns: 15
+graders:
+- name: r3-rewritten-and-confirmed
+  type: regex
+  pattern: '### R3 ✓ Only admins can delete workouts'
+  flags: i
+  target:
+    source: file
+    path: docs/discovery/2026-10-13-workouts.md
+- name: follow-up-appended-as-new-f-item
+  type: regex
+  pattern: ^\s*-\s*F2\b
+  flags: m
+  target:
+    source: file
+    path: docs/discovery/2026-10-13-workouts.md
+- name: f1-keeps-its-id
+  type: regex
+  pattern: ^\s*-\s*F1 Can a coach move an athlete to another group\?
+  flags: m
+  target:
+    source: file
+    path: docs/discovery/2026-10-13-workouts.md

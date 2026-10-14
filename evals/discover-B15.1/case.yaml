@@ -1,0 +1,32 @@
+schema_version: '1.1'
+name: discover:B15.1
+description: A dropped rule keeps its place (features/discover.feature @B15.1)
+tags:
+- discover
+- R15
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: '/bdd:discover docs/discovery/2026-10-13-workouts.md R4: drop it, renaming is out of scope for this story'
+  max_turns: 15
+graders:
+- name: r4-struck-with-reason
+  type: regex
+  pattern: '### R4 ~~[^~\n]+~~[^\n]*scope'
+  flags: i
+  target:
+    source: file
+    path: docs/discovery/2026-10-13-workouts.md
+- name: r5-keeps-its-id
+  type: regex
+  pattern: '### R5 \S+ The workout card shows the sport''s colour'
+  target:
+    source: file
+    path: docs/discovery/2026-10-13-workouts.md
+- name: status-line-updated
+  type: regex
+  pattern: '\*\*Status:\*\* 5 rules \(1 ✓, 0 !, 4 \?\)'
+  match: not_contains
+  target:
+    source: file
+    path: docs/discovery/2026-10-13-workouts.md

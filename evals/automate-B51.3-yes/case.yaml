@@ -1,0 +1,22 @@
+schema_version: "1.1"
+name: automate:B51.3-yes
+description: "A project without tests, after a yes (features/automate.feature @B51.3)"
+tags: [automate, R51]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: '/bdd:automate features/workouts.feature (you asked "Install pytest-bdd?": yes)'
+  max_turns: 20
+  timeout_seconds: 420
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit]
+graders:
+  - name: adds-pytest-bdd
+    type: regex
+    target: {source: file, path: pyproject.toml}
+    pattern: 'pytest-bdd'
+    match: contains
+  - name: writes-pytest-bdd-steps
+    type: tool_used
+    tool: Write
+    input_match: 'from pytest_bdd import'
+    min: 1

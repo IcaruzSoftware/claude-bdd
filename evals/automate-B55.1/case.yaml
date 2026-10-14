@@ -1,0 +1,46 @@
+schema_version: "1.1"
+name: automate:B55.1
+description: "A new feature (features/automate.feature @B55.1) - runs tests: needs --allow-tools Bash"
+tags: [automate, R55, needs-bash]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: '/bdd:automate features/sharing.feature'
+  max_turns: 25
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+graders:
+  - name: ran-the-suite
+    type: tool_used
+    tool: Bash
+    input_match: 'unittest'
+    min: 1
+  - name: tests-are-red
+    type: llm
+    focus: last_message
+    criteria: |
+      PASS if the report says that the tests for the sharing examples B1.1 and B1.2 are red and
+      none of them is green.
+      FAIL if a sharing test is reported green or the report gives no run result.
+  - name: no-new-production-file
+    type: file_exists
+    path: "coach/**"
+    exists: false
+  - name: no-sharing-code
+    type: regex
+    target: {source: file, path: coach/workouts.py}
+    pattern: 'share'
+    flags: 'i'
+    match: not_contains
+  - name: intent-and-blend-in
+    type: llm
+    focus: trace
+    criteria: |
+      Judge only the test code Claude wrote or added in this run (Write and Edit calls on test files).
+      (a) Intent: every new test names its example as "sharing:" plus the example ID (docstring or
+      comment) and asserts exactly that example's Then, nothing more and nothing less:
+      - B1.1: after Tom shares "Intervals" with Carl, Carl's workout list contains "Intervals"
+      - B1.2: Tom sharing "Intervals" with Ben (group A) is refused (Refused)
+      Calls to production functions that do not exist yet are expected (FORWARD mode).
+      (b) Blend-in: the existing suite uses stdlib unittest: TestCase classes in tests/test_<area>.py, data from make_club() in tests/helpers.py built in setUp, methods named test_<behaviour>, self.assert* checks, a blank line between arrange and assert. New tests do the same: no pytest, no pytest-bdd, no new test folder, no own setup that duplicates make_club().
+      PASS if (a) and (b) hold for every new test. FAIL otherwise, naming the test and the point it breaks.

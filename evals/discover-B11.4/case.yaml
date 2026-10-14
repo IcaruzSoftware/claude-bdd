@@ -1,0 +1,27 @@
+schema_version: '1.1'
+name: discover:B11.4
+description: Lagging tests are noticed, not acted on (features/discover.feature @B11.4)
+tags:
+- discover
+- R11
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: /bdd:discover the workouts API
+  max_turns: 15
+graders:
+- name: scratchpad-mode-forward
+  type: tool_used
+  tool: Write
+  input_match: \*\*Mode:\*\* FORWARD
+  min: 1
+- name: mode-not-backward
+  type: tool_used
+  tool: Write
+  input_match: \*\*Mode:\*\* BACKWARD
+  min: 0
+  max: 0
+- name: suggests-backward
+  type: regex
+  pattern: Use --backward to add tests
+  target: last_message

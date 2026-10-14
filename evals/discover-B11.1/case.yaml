@@ -1,0 +1,23 @@
+schema_version: '1.1'
+name: discover:B11.1
+description: An idea without code (features/discover.feature @B11.1)
+tags:
+- discover
+- R11
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: '/bdd:discover workout sharing: coaches send a planned workout to the athletes of their group'
+  max_turns: 15
+graders:
+- name: scratchpad-mode-forward
+  type: tool_used
+  tool: Write
+  input_match: \*\*Mode:\*\* FORWARD
+  min: 1
+- name: mode-not-backward
+  type: tool_used
+  tool: Write
+  input_match: \*\*Mode:\*\* BACKWARD
+  min: 0
+  max: 0

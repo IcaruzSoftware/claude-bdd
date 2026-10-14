@@ -1,0 +1,40 @@
+schema_version: '1.1'
+name: formulate:B30.1
+description: A finished scratchpad becomes a feature (features/formulate.feature @B30.1)
+tags:
+- formulate
+- R30
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: /bdd:formulate docs/discovery/2026-10-13-workouts.md
+  max_turns: 15
+graders:
+- name: rules-r1-to-r3
+  type: regex
+  pattern: '@R1\s+Rule:[\s\S]*@R2\s+Rule:[\s\S]*@R3\s+Rule:'
+  target:
+    source: file
+    path: features/workouts.feature
+- name: three-rules-only
+  type: regex
+  pattern: '^\s*Rule:'
+  flags: m
+  match: count:3
+  target:
+    source: file
+    path: features/workouts.feature
+- name: examples-of-r1-to-r3
+  type: regex
+  pattern: '@B1\.1[\s\S]*@B1\.2[\s\S]*@B2\.1[\s\S]*@B3\.1[\s\S]*@B3\.2'
+  target:
+    source: file
+    path: features/workouts.feature
+- name: no-r4
+  type: regex
+  pattern: '@R4|@B4\.|^\s*(?:Rule|Example|Scenario):[^\n]*renam'
+  flags: im
+  match: not_contains
+  target:
+    source: file
+    path: features/workouts.feature

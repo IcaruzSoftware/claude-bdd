@@ -1,0 +1,39 @@
+schema_version: "1.1"
+name: automate:B51.5
+description: "No runner wanted and no tests yet (features/automate.feature @B51.5)"
+tags: [automate, R51]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: '/bdd:automate features/workouts.feature (you asked "Install pytest-bdd?": no, I don''t want pytest-bdd)'
+  max_turns: 15
+  timeout_seconds: 420
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit]
+graders:
+  - name: proposes-suite-as-statements
+    type: llm
+    focus: last_message
+    criteria: |
+      PASS if the reply proposes how the test suite should look as statements for the user to confirm
+      or correct (not as open questions), covering at least the framework (e.g. pytest), the folder
+      (e.g. tests/), the file layout (e.g. one file per feature) and what a test may touch (e.g. no
+      network), and then waits for the user.
+      FAIL if it writes tests, adds or installs a dependency, or only asks open questions.
+  - name: names-tests-folder
+    type: regex
+    target: last_message
+    pattern: 'tests/'
+    match: contains
+  - name: no-dependency-yet
+    type: regex
+    target: {source: file, path: pyproject.toml}
+    pattern: 'pytest'
+    match: not_contains
+  - name: no-requirements-file
+    type: file_exists
+    path: "requirements*.txt"
+    exists: false
+  - name: no-tests-yet
+    type: file_exists
+    path: "**/*test*.py"
+    exists: false

@@ -1,0 +1,28 @@
+schema_version: '1.1'
+name: discover:B12.1
+description: The detail endpoint forgets a check the list endpoint has (features/discover.feature @B12.1)
+tags:
+- discover
+- R12
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: /bdd:discover --backward the workouts API
+  max_turns: 15
+graders:
+- name: group-rule-is-a-guess
+  type: tool_used
+  tool: Write
+  input_match: '### R\d+ \? [^\\]*[Cc]oach[^\\]*group'
+  min: 1
+- name: group-rule-not-certain
+  type: tool_used
+  tool: Write
+  input_match: '### R\d+ [!✓] [^\\]*[Cc]oach[^\\]*group'
+  min: 0
+  max: 0
+- name: warning-points-at-detail
+  type: tool_used
+  tool: Write
+  input_match: code probably deviates[^\\]*(?:detail|:(?:2[2-9]|30)\b)
+  min: 1

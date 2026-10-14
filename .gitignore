@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+.pytest_cache/
+evals/results/
+# session logs left behind by eval runs (may contain personal data)
+evals/*/*-*-*-*-*.jsonl

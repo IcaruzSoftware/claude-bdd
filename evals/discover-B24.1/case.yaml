@@ -1,0 +1,38 @@
+schema_version: '1.1'
+name: discover:B24.1
+description: A bigger feature gets one suggestion (features/discover.feature @B24.1)
+tags:
+- discover
+- R24
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: Coaches should manage groups, invite athletes and see their workouts.
+  max_turns: 15
+graders:
+- name: suggests-once
+  type: regex
+  pattern: Want an example map first\?
+  match: count:1
+  target: last_message
+- name: discover-not-started
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?discover"'
+  min: 0
+  max: 0
+- name: no-scratchpad-written
+  type: tool_used
+  tool: Write
+  input_match: '# Example Map'
+  min: 0
+  max: 0
+- name: no-discovery-file
+  type: file_exists
+  path: docs/discovery/**
+  exists: false
+- name: continues-normal-work
+  type: llm
+  criteria: |-
+    PASS if, besides at most one line suggesting an example map, the reply works on the request itself: it plans, implements or asks concrete questions about managing groups, inviting athletes or seeing workouts.
+    FAIL if the reply consists only of the example-map suggestion, or waits for an answer to it before doing anything else.

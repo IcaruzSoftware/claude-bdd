@@ -1,0 +1,26 @@
+schema_version: '1.1'
+name: discover:B18.2
+description: The story is too big (features/discover.feature @B18.2)
+tags:
+- discover
+- R18
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: /bdd:discover docs/discovery/2026-10-13-coach-app.md
+  max_turns: 15
+graders:
+- name: proposes-split
+  type: regex
+  pattern: split
+  flags: i
+  target: last_message
+- name: split-names-two-stories
+  type: llm
+  focus: last_message
+  criteria: |
+    The scratchpad has 15 rules about one "coach app" story: groups and invitations, workouts and
+    comments, billing (monthly fee per active athlete), summary emails, CSV export and calendar display.
+    PASS if the reply proposes splitting the story and names at least two smaller stories, each with
+    the rules (by ID or by topic) that belong to it.
+    FAIL if it only says the story is too big or should be split, without naming the smaller stories.

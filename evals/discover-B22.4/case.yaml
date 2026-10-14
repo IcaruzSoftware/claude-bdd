@@ -1,0 +1,37 @@
+schema_version: '1.1'
+name: discover:B22.4
+description: A work-in-progress rule is confirmed later (features/discover.feature @B22.4)
+tags:
+- discover
+- R22
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: /bdd:formulate docs/discovery/2026-10-13-workouts.md I confirmed R4 in the scratchpad.
+  max_turns: 15
+graders:
+- name: wip-removed
+  type: regex
+  pattern: '@wip'
+  match: not_contains
+  target:
+    source: file
+    path: features/workouts.feature
+- name: r4-example-kept
+  type: regex
+  pattern: '@B4\.1\s*\n\s*Example: Anna substitutes for Tom'
+  target:
+    source: file
+    path: features/workouts.feature
+- name: user-free-text-kept
+  type: regex
+  pattern: 'Agreed with the club board on 10 October\.'
+  target:
+    source: file
+    path: features/workouts.feature
+- name: user-step-kept
+  type: regex
+  pattern: 'Then Anna gets "not found"'
+  target:
+    source: file
+    path: features/workouts.feature

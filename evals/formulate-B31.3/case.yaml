@@ -1,0 +1,35 @@
+schema_version: '1.1'
+name: formulate:B31.3
+description: The user overrides an open rule (features/formulate.feature @B31.3)
+tags:
+- formulate
+- R31
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: /bdd:formulate docs/discovery/2026-10-13-workouts.md formulate anyway
+  max_turns: 15
+graders:
+- name: feature-written
+  type: file_exists
+  path: features/workouts.feature
+  exists: true
+- name: r4-included
+  type: regex
+  pattern: '@R4\s+Rule:'
+  target:
+    source: file
+    path: features/workouts.feature
+- name: r4-examples-wip
+  type: regex
+  pattern: '@B4\.1[^\n]*@wip|@wip[^\n]*@B4\.1|@wip\s*\n\s*@B4\.1|@B4\.1\s*\n\s*@wip'
+  target:
+    source: file
+    path: features/workouts.feature
+- name: confirmed-examples-not-wip
+  type: regex
+  pattern: '@B[1-3]\.\d+[^\n]*@wip|@wip[^\n]*@B[1-3]\.\d+|@wip\s*\n\s*@B[1-3]\.\d+|@B[1-3]\.\d+\s*\n\s*@wip'
+  match: not_contains
+  target:
+    source: file
+    path: features/workouts.feature

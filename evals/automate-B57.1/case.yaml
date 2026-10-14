@@ -1,0 +1,31 @@
+schema_version: "1.1"
+name: automate:B57.1
+description: "Red for the wrong reason (features/automate.feature @B57.1) - runs tests: needs --allow-tools Bash"
+tags: [automate, R57, needs-bash]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: '/bdd:automate --backward features/workouts.feature'
+  max_turns: 25
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+graders:
+  - name: ran-the-suite
+    type: tool_used
+    tool: Bash
+    input_match: 'unittest'
+    min: 1
+  - name: import-fixed
+    type: regex
+    target: {source: file, path: tests/test_workouts.py}
+    pattern: 'tests\.helper\b'
+    match: not_contains
+  - name: not-reported-red
+    type: llm
+    focus: last_message
+    criteria: |
+      The B2.1 test imports its helper from tests.helper, which does not exist (the module is
+      tests.helpers), so it fails with ModuleNotFoundError. The production code is correct.
+      PASS if the report does not list the B2.1 test as red, failing or as a finding (it may say that a
+      wrong import in the test was fixed).
+      FAIL if it reports B2.1 as red, failing or as a finding, or blames the production code.

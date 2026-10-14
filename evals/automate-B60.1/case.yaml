@@ -1,0 +1,53 @@
+schema_version: "1.1"
+name: automate:B60.1
+description: "The second feature in a PLAIN project (features/automate.feature @B60.1)"
+tags: [automate, R60]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: '/bdd:automate features/workouts.feature'
+  max_turns: 20
+  timeout_seconds: 420
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit]
+graders:
+  - name: plain-tests-name-their-example
+    type: tool_used
+    tool: Write
+    input_match: 'workouts:B\d+\.\d+'
+    min: 1
+  - name: no-pytest-bdd-dependency
+    type: regex
+    target: {source: file, path: pyproject.toml}
+    pattern: 'pytest-bdd'
+    match: not_contains
+  - name: no-pytest-bdd-steps
+    type: tool_used
+    tool: Write
+    input_match: 'pytest_bdd'
+    min: 0
+    max: 0
+  - name: does-not-ask
+    type: regex
+    target: last_message
+    pattern: '\binstall\b[^?\n]*\?|\bdependency\?'
+    flags: 'i'
+    match: not_contains
+  - name: intent-and-blend-in
+    type: llm
+    focus: trace
+    criteria: |
+      Judge only the test code Claude wrote or added in this run (Write and Edit calls on test files).
+      (a) Intent: every new test names its example as "workouts:" plus the example ID (docstring or
+      comment) and asserts exactly that example's Then, nothing more and nothing less:
+      - B1.1: coach Anna (group A) opening Carl's workout (group B) gets "not found" (NotFound)
+      - B1.2: coach Anna opening Ben's workout (group A) sees it
+      - B2.1: athlete Ben opening Carl's workout gets "not found" (NotFound)
+      - B3.1: coach Anna deleting Ben's workout is refused (Refused) and the workout still exists
+      - B3.2: admin Ada deleting Ben's workout removes it
+      (b) Blend-in: the existing suite uses plain pytest functions in tests/test_<area>.py, gets its data from the `club` fixture in tests/conftest.py, uses pytest.raises for errors and a blank line between arrange and assert. New tests do the same: no unittest classes, no pytest-bdd, no new test folder, no own setup that duplicates the club fixture.
+      PASS if (a) and (b) hold for every new test. FAIL otherwise, naming the test and the point it breaks.
+  - name: shows-no-notice
+    type: regex
+    target: last_message
+    pattern: 'to switch'
+    match: not_contains

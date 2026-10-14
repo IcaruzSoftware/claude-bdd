@@ -1,0 +1,26 @@
+schema_version: '1.1'
+name: discover:B22.1
+description: No tests while a question is open (features/discover.feature @B22.1)
+tags:
+- discover
+- R22
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: /bdd:discover docs/discovery/2026-10-13-workouts.md Looks good. Now write the tests for it.
+  max_turns: 15
+graders:
+- name: names-f2
+  type: regex
+  pattern: \bF2\b
+  target: last_message
+- name: writes-no-tests
+  type: tool_used
+  tool: Write
+  input_match: '"file_path"\s*:\s*"[^"]*(?:/tests?/|/test_[^"/]*|_test\.[a-z]+")'
+  min: 0
+  max: 0
+- name: no-test-files
+  type: file_exists
+  path: '**/*test*'
+  exists: false

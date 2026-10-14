@@ -1,0 +1,32 @@
+schema_version: "1.1"
+name: automate:B56.3
+description: "A rerun after fixing a wrong reason (features/automate.feature @B56.3) - runs tests: needs --allow-tools Bash"
+tags: [automate, R56, needs-bash]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: '/bdd:automate --backward features/workouts.feature'
+  max_turns: 25
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+graders:
+  - name: ran-the-suite-twice
+    type: tool_used
+    tool: Bash
+    input_match: 'unittest'
+    min: 2
+  - name: typo-fixed
+    type: regex
+    target: {source: file, path: tests/test_workouts.py}
+    pattern: 'NotFuond'
+    match: not_contains
+  - name: reports-only-the-rerun
+    type: llm
+    focus: last_message
+    criteria: |
+      The B2.1 test first failed on a typo in the test code (NameError: NotFuond); Claude fixed it and ran
+      the suite again.
+      PASS if the report gives one set of results, that of the last run, in which the B2.1 test is green
+      (it may say that a typo in the test was fixed).
+      FAIL if the report shows results of the first run (B2.1 red or erroring, a NameError count,
+      "first run: ...") or two sets of counts.

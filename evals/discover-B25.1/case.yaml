@@ -1,0 +1,17 @@
+schema_version: "1.1"
+name: discover:B25.1
+description: "A German-speaking user is asked once about the language (features/discover.feature @B25.1)"
+tags: [discover, R25]
+execution:
+  prompt: "/bdd:discover Mach bitte ein Example Mapping für das Teilen von Workouts in meiner Coach-App: Coaches sollen Workouts an Athleten ihrer Gruppe schicken können."
+  max_turns: 10
+graders:
+  - name: asks-language-once
+    type: regex
+    pattern: 'Scratchpad in German or English\?'
+    match: "count:1"
+    target: last_message
+  - name: no-scratchpad-yet
+    type: file_exists
+    path: "docs/discovery/*.md"
+    exists: false

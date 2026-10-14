@@ -1,0 +1,30 @@
+schema_version: "1.1"
+name: automate:B57.2
+description: "pytest-bdd with strict markers (features/automate.feature @B57.2)"
+tags: [automate, R57]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: '/bdd:automate features/workouts.feature'
+  max_turns: 20
+  timeout_seconds: 420
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit]
+graders:
+  - name: writes-pytest-bdd-steps
+    type: tool_used
+    tool: Write
+    input_match: 'from pytest_bdd import'
+    min: 1
+  - name: keeps-strict-markers
+    type: regex
+    target: {source: file, path: pyproject.toml}
+    pattern: '--strict-markers'
+    match: contains
+  - name: registers-id-tags
+    type: llm
+    focus: trace
+    criteria: |
+      PASS if Claude registered every ID tag of features/workouts.feature as a pytest marker: R1, R2, R3,
+      B1.1, B1.2, B2.1, B3.1 and B3.2, in the markers list of pyproject.toml or another pytest config
+      (pytest.ini, setup.cfg, or conftest.py with addinivalue_line).
+      FAIL if any of them is missing or if "--strict-markers" was removed.

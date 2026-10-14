@@ -1,0 +1,27 @@
+schema_version: '1.1'
+name: formulate:B39.1
+description: The project's word wins (features/formulate.feature @B39.1)
+tags:
+- formulate
+- R39
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: /bdd:formulate docs/discovery/2026-10-13-training-plans.md
+  max_turns: 15
+graders:
+- name: says-coach
+  type: regex
+  pattern: \bcoach
+  flags: i
+  target:
+    source: file
+    path: features/training-plans.feature
+- name: never-trainer
+  type: regex
+  pattern: trainer
+  flags: i
+  match: not_contains
+  target:
+    source: file
+    path: features/training-plans.feature

@@ -1,0 +1,25 @@
+schema_version: '1.1'
+name: discover:B24.2
+description: No second suggestion (features/discover.feature @B24.2)
+tags:
+- discover
+- R24
+context:
+  scaffold_script: scaffold.sh
+  history_file: history.jsonl
+execution:
+  prompt: 'Next one: athletes should log workouts, comment on their coach''s plans and get a weekly summary by email.'
+  max_turns: 15
+graders:
+- name: no-second-suggestion
+  type: regex
+  pattern: example map|/bdd:discover
+  flags: i
+  match: not_contains
+  target: last_message
+- name: discover-not-started
+  type: tool_used
+  tool: Skill
+  input_match: '"skill"\s*:\s*"(?:[\w-]+:)?discover"'
+  min: 0
+  max: 0

@@ -1,0 +1,28 @@
+schema_version: '1.1'
+name: formulate:B34.4
+description: An open question keeps the scratchpad (features/formulate.feature @B34.4)
+tags:
+- formulate
+- R34
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: /bdd:formulate docs/discovery/2026-10-13-workouts.md Formulate anyway, F2 can wait. I reviewed features/workouts.feature and confirm it.
+  max_turns: 15
+graders:
+- name: says-scratchpad-kept
+  type: regex
+  pattern: 'Scratchpad kept: F2 still open\.'
+  target: last_message
+- name: scratchpad-not-deleted
+  type: tool_used
+  tool: Bash
+  input_match: \brm\b
+  min: 0
+  max: 0
+- name: f2-still-in-scratchpad
+  type: regex
+  pattern: '- F2 Can a coach move an athlete to another group\?'
+  target:
+    source: file
+    path: docs/discovery/2026-10-13-workouts.md

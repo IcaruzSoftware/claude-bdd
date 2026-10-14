@@ -1,0 +1,22 @@
+schema_version: '1.1'
+name: formulate:B31.2
+description: The user accepts Claude's certain rules (features/formulate.feature @B31.2)
+tags:
+- formulate
+- R31
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: /bdd:formulate docs/discovery/2026-10-13-workouts.md accept all !
+  max_turns: 15
+graders:
+- name: feature-written
+  type: file_exists
+  path: features/workouts.feature
+  exists: true
+- name: certain-rules-included
+  type: regex
+  pattern: '@R2\s+Rule:[\s\S]*@R3\s+Rule:'
+  target:
+    source: file
+    path: features/workouts.feature

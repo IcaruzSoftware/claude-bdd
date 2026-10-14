@@ -1,0 +1,36 @@
+schema_version: "1.1"
+name: automate:B61.2
+description: "The default (features/automate.feature @B61.2)"
+tags: [automate, R61]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: '/bdd:automate features/sharing.feature'
+  max_turns: 20
+  timeout_seconds: 420
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit]
+graders:
+  - name: forward-mode
+    type: regex
+    target: last_message
+    pattern: '(?<!-)\bforward\b'
+    flags: 'i'
+    match: contains
+  - name: not-backward-mode
+    type: regex
+    target: last_message
+    pattern: '(?<!-)\bbackward\b'
+    flags: 'i'
+    match: not_contains
+  - name: intent-and-blend-in
+    type: llm
+    focus: trace
+    criteria: |
+      Judge only the test code Claude wrote or added in this run (Write and Edit calls on test files).
+      (a) Intent: every new test names its example as "sharing:" plus the example ID (docstring or
+      comment) and asserts exactly that example's Then, nothing more and nothing less:
+      - B1.1: after Tom shares "Intervals" with Carl, Carl's workout list contains "Intervals"
+      - B1.2: Tom sharing "Intervals" with Ben (group A) is refused (Refused)
+      Calls to production functions that do not exist yet are expected (FORWARD mode).
+      (b) Blend-in: the existing suite uses stdlib unittest: TestCase classes in tests/test_<area>.py, data from make_club() in tests/helpers.py built in setUp, methods named test_<behaviour>, self.assert* checks, a blank line between arrange and assert. New tests do the same: no pytest, no pytest-bdd, no new test folder, no own setup that duplicates make_club().
+      PASS if (a) and (b) hold for every new test. FAIL otherwise, naming the test and the point it breaks.

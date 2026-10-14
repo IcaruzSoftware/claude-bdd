@@ -1,0 +1,27 @@
+schema_version: '1.1'
+name: discover:B18.1
+description: The idea is not ready (features/discover.feature @B18.1)
+tags:
+- discover
+- R18
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: /bdd:discover docs/discovery/2026-10-13-workout-sharing.md
+  max_turns: 15
+graders:
+- name: says-not-ready
+  type: regex
+  pattern: not ready
+  flags: i
+  target: last_message
+- name: does-not-push-to-formulate
+  type: regex
+  pattern: (?<!not )ready for (?:/bdd:)?formulate|Run /bdd:formulate
+  flags: i
+  match: not_contains
+  target: last_message
+- name: no-feature-file
+  type: file_exists
+  path: '**/*.feature'
+  exists: false

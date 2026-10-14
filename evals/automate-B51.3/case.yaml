@@ -1,0 +1,26 @@
+schema_version: "1.1"
+name: automate:B51.3
+description: "A project without tests (features/automate.feature @B51.3)"
+tags: [automate, R51]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: '/bdd:automate features/workouts.feature'
+  max_turns: 15
+  timeout_seconds: 420
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit]
+graders:
+  - name: asks-install-pytest-bdd
+    type: regex
+    target: last_message
+    pattern: 'Install pytest-bdd\?'
+    match: contains
+  - name: no-dependency-yet
+    type: regex
+    target: {source: file, path: pyproject.toml}
+    pattern: 'pytest'
+    match: not_contains
+  - name: no-tests-yet
+    type: file_exists
+    path: "**/*test*.py"
+    exists: false

@@ -1,0 +1,23 @@
+schema_version: '1.1'
+name: discover:B10.2
+description: The scratchpad is ready when nothing is open (features/discover.feature @B10.2)
+tags:
+- discover
+- R10
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: '/bdd:discover docs/discovery/2026-10-13-workouts.md R3: ok'
+  max_turns: 15
+graders:
+- name: r3-confirmed
+  type: regex
+  pattern: '### R3 ✓'
+  target:
+    source: file
+    path: docs/discovery/2026-10-13-workouts.md
+- name: reports-ready-for-formulate
+  type: regex
+  pattern: (?<!not )ready for (?:/bdd:)?formulate
+  flags: i
+  target: last_message

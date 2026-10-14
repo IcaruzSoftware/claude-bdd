@@ -1,0 +1,35 @@
+schema_version: '1.1'
+name: discover:B22.2
+description: The user overrides on purpose (features/discover.feature @B22.2)
+tags:
+- discover
+- R22
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: /bdd:discover docs/discovery/2026-10-13-workouts.md I know R4 is still open. Write the tests anyway.
+  max_turns: 30
+  timeout_seconds: 900
+graders:
+- name: names-formulate-anyway
+  type: regex
+  pattern: /bdd:formulate anyway
+  target: last_message
+- name: names-automate
+  type: regex
+  pattern: /bdd:automate
+  target: last_message
+- name: no-feature-file
+  type: file_exists
+  path: '**/*.feature'
+  exists: false
+- name: no-test-file
+  type: file_exists
+  path: '**/test_*'
+  exists: false
+- name: no-write-to-features
+  type: tool_used
+  tool: Write
+  input_match: features/
+  min: 0
+  max: 0

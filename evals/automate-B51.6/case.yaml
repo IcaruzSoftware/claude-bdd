@@ -1,0 +1,37 @@
+schema_version: "1.1"
+name: automate:B51.6
+description: "A runner and example references together (features/automate.feature @B51.6)"
+tags: [automate, R51]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: '/bdd:automate features/workouts.feature'
+  max_turns: 20
+  timeout_seconds: 420
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit]
+graders:
+  - name: writes-pytest-bdd-steps
+    type: tool_used
+    tool: Write
+    input_match: 'from pytest_bdd import'
+    min: 1
+  - name: no-notice-in-reply
+    type: regex
+    target: last_message
+    pattern: 'plain tests|to switch'
+    flags: 'i'
+    match: not_contains
+  - name: runner-mode-without-notice
+    type: llm
+    focus: trace
+    criteria: |
+      The trace may be shortened in the middle; judge only the messages you can see.
+      A mode notice is a hint that the user could switch the test mode, e.g. "... suite found, writing
+      plain tests. Say 'use ...' to switch.", or a question which mode to use. Naming the chosen mode
+      (e.g. "RUNNER · FORWARD · 5 tests" or "pytest-bdd is a dev dependency, so this is RUNNER mode")
+      is not a notice. Neither is the line suggesting "--backward" ("... looks implemented already. Use
+      --backward to add tests for it retroactively?"): it is about the direction (FORWARD/BACKWARD), not
+      about RUNNER vs. PLAIN mode.
+      PASS if none of Claude's own messages (not the skill instructions, not tool output) carries a
+      mode notice or asks about the mode.
+      FAIL if one does.

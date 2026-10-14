@@ -1,0 +1,34 @@
+{
+  "name": "bdd",
+  "version": "0.1.0",
+  "description": "Behavior-Driven Development for Claude Code: example mapping into a discovery scratchpad, Gherkin feature files, then tests (pytest-bdd, behave, cucumber, playwright-bdd or your plain test suite).",
+  "author": { "name": "IcaruzSoftware" },
+  "homepage": "https://github.com/IcaruzSoftware/claude-bdd",
+  "repository": "https://github.com/IcaruzSoftware/claude-bdd",
+  "license": "MIT",
+  "keywords": [
+    "bdd",
+    "behavior-driven-development",
+    "example-mapping",
+    "gherkin",
+    "cucumber",
+    "pytest-bdd",
+    "specification-by-example",
+    "living-documentation",
+    "tdd"
+  ],
+  "userConfig": {
+    "keep_scratchpad": {
+      "type": "boolean",
+      "title": "Keep scratchpad",
+      "description": "Keep the discovery scratchpad after formulate instead of deleting it",
+      "default": false
+    },
+    "ask_before_delete": {
+      "type": "boolean",
+      "title": "Ask before deleting the scratchpad",
+      "description": "Ask before formulate deletes the scratchpad",
+      "default": true
+    }
+  }
+}

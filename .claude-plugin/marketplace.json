@@ -1,0 +1,12 @@
+{
+  "name": "claude-bdd",
+  "owner": { "name": "IcaruzSoftware" },
+  "description": "Claude Code BDD plugin: example mapping, Gherkin feature files and tests.",
+  "plugins": [
+    {
+      "name": "bdd",
+      "source": "./",
+      "description": "Behavior-Driven Development for Claude Code: discover (example mapping), formulate (Gherkin), automate (tests)."
+    }
+  ]
+}

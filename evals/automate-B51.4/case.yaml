@@ -1,0 +1,29 @@
+schema_version: "1.1"
+name: automate:B51.4
+description: "The user asks for a runner in a project with a plain suite (features/automate.feature @B51.4)"
+tags: [automate, R51]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: '/bdd:automate features/workouts.feature (use pytest-bdd)'
+  max_turns: 15
+  timeout_seconds: 420
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit]
+graders:
+  - name: asks-before-adding
+    type: regex
+    target: last_message
+    pattern: 'pytest-bdd[^\n]*\?'
+    flags: 'i'
+    match: contains
+  - name: no-pytest-bdd-dependency
+    type: regex
+    target: {source: file, path: pyproject.toml}
+    pattern: 'pytest-bdd'
+    match: not_contains
+  - name: no-pytest-bdd-steps
+    type: tool_used
+    tool: Write
+    input_match: 'pytest_bdd'
+    min: 0
+    max: 0

@@ -1,0 +1,23 @@
+schema_version: '1.1'
+name: formulate:B35.1
+description: Asking by default (features/formulate.feature @B35.1)
+tags:
+- formulate
+- R35
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: /bdd:formulate docs/discovery/2026-10-13-workouts.md I reviewed features/workouts.feature and confirm it.
+  max_turns: 15
+graders:
+- name: asks-before-deleting
+  type: regex
+  pattern: (?:delete|remove)[^\n]*\?
+  flags: i
+  target: last_message
+- name: nothing-deleted
+  type: tool_used
+  tool: Bash
+  input_match: \brm\b
+  min: 0
+  max: 0

@@ -1,0 +1,26 @@
+schema_version: '1.1'
+name: discover:B22.3
+description: automate respects open questions too (features/discover.feature @B22.3)
+tags:
+- discover
+- R22
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: /bdd:automate workouts
+  max_turns: 15
+graders:
+- name: names-f2
+  type: regex
+  pattern: \bF2\b
+  target: last_message
+- name: writes-no-tests
+  type: tool_used
+  tool: Write
+  input_match: '"file_path"\s*:\s*"[^"]*(?:/tests?/|/test_[^"/]*|_test\.[a-z]+")'
+  min: 0
+  max: 0
+- name: no-test-files
+  type: file_exists
+  path: '**/*test*'
+  exists: false
