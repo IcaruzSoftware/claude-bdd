@@ -1,6 +1,6 @@
 {
   "name": "bdd",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Behavior-Driven Development for Claude Code: example mapping into a discovery scratchpad, Gherkin feature files, then tests (pytest-bdd, behave, cucumber, playwright-bdd or your plain test suite).",
   "author": { "name": "IcaruzSoftware" },
   "homepage": "https://github.com/IcaruzSoftware/claude-bdd",
