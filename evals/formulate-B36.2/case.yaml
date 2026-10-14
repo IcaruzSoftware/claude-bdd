@@ -9,6 +9,7 @@ context:
 execution:
   prompt: /bdd:formulate docs/discovery/2026-10-13-workouts.md
   max_turns: 15
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit]
 graders:
 - name: feature-in-test-resources
   type: file_exists

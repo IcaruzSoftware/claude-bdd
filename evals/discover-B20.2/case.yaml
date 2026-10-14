@@ -9,6 +9,7 @@ context:
 execution:
   prompt: /bdd:discover workouts
   max_turns: 15
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit]
 graders:
 - name: scratchpad-in-specs
   type: file_exists

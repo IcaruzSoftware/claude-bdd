@@ -7,7 +7,7 @@ tags:
 context:
   scaffold_script: scaffold.sh
 execution:
-  prompt: /bdd:discover Workouts
+  prompt: /bdd:discover docs/discovery/2026-10-13-workouts.md
   max_turns: 15
 graders:
 - name: r3-keeps-user-text
@@ -28,8 +28,8 @@ graders:
   input_match: 2026-10-13-workouts\.md
   min: 0
   max: 0
-- name: scratchpad-edited
+- name: scratchpad-re-read
   type: tool_used
-  tool: Edit
+  tool: Read
   input_match: 2026-10-13-workouts\.md
   min: 1

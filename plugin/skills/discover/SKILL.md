@@ -170,6 +170,7 @@ After writing and after every fold, check Wynne's signals:
 3. Remind the user how to answer: edit the file or reply by ID.
 4. When every rule that is not dropped is `✓` and no question is open, say: "The scratchpad is ready for formulate. Run /bdd:formulate."
 5. In BACKWARD mode, add: "Then run /bdd:automate --backward <feature path>." The feature path is the `**Delta to:**` path, else `features/<slug>.feature`.
+6. If the user overrides (e.g. "write the tests anyway"), add the sentence from section "Order of the stages", step 3, word for word: "Run `/bdd:formulate anyway`, then `/bdd:automate`. …"
 
 ## 11. Order of the stages
 
@@ -177,7 +178,7 @@ The stages run strictly in order: discover, then formulate, then code and tests.
 
 1. While any rule is `?` or `!`, or any F-item is open, write no code and no tests.
 2. If the user asks for code or tests now, name the open IDs (e.g. "F2 is still open") and write nothing else.
-3. Only if the user explicitly overrides (e.g. "write the tests anyway"), the work moves on. Then name the next commands and say: "Run /bdd:formulate anyway, then /bdd:automate. The examples of <open rule IDs> will be tagged @wip and get no tests yet." In BACKWARD mode say "/bdd:automate --backward <feature path>" instead of "/bdd:automate" (feature path as in section "Reply"). Write no feature file and no tests in discover itself.
+3. Only if the user explicitly overrides (e.g. "write the tests anyway"), the work moves on. Then say exactly: "Run `/bdd:formulate anyway`, then `/bdd:automate`. The examples of <open rule IDs> will be tagged @wip and get no tests yet." Keep "anyway" inside the backticks: it is part of the command. In BACKWARD mode write "`/bdd:automate --backward <feature path>`" instead of "`/bdd:automate`" (feature path as in section "Reply"). Write no feature file and no tests in discover itself.
 
 ## Never
 

@@ -27,7 +27,7 @@ Write no code and no tests in this skill.
 1. Re-read the scratchpad file.
 2. Skip dropped (struck-through) rules. They never count as `?` or `!`.
 3. Collect every other rule marked `?`, every other rule marked `!`, and every open F-item (not struck through).
-4. If any rule is `?` or any F-item is open: stop. List them by ID, e.g. "Not ready: R4 is still ?." Write no feature file. Exception: the override in step 9.
+4. If any rule is `?` or any F-item is open: stop. List them by ID, e.g. "Not ready: R4 is still ?." Write no feature file. Exceptions: the override in step 9, and an earlier override: the feature file exists already and tags every example of these rules `@wip`. After an earlier override, change nothing in the feature file. If the user confirms it now, go straight to section 8.
 5. A `!` rule counts as accepted when the user said "accept all !" or `ok <ID>` for it (e.g. `ok R3`).
 6. If any `!` rule is not accepted, list those rules and ask: "Accept all ! rules (<IDs>)?" Then stop and wait. Exception: the override in step 9.
 7. Mark every accepted `!` rule `✓` in the scratchpad and continue.
@@ -116,7 +116,7 @@ Read the two settings. Each is the text `true` or `false`.
 
 1. If keep_scratchpad is exactly `true`: keep the scratchpad. Update its status line to "formulated into <feature path> on <date>". Say "Scratchpad kept (keep_scratchpad is on)." Done.
 2. Any other value of keep_scratchpad means off. Then delete the scratchpad as follows.
-3. Before deleting, make sure the reasons of every rule are in the free text under its `Rule:`.
+3. Before deleting, check the free text under every `Rule:`. If a rule's reasons from the scratchpad are missing there, add them yourself with Edit. Do not ask about this. Then go on with step 4.
 4. If ask_before_delete is exactly `false`: delete the scratchpad without asking. Say "Deleted <path>."
 5. Any other value of ask_before_delete means on. Ask: "Delete the scratchpad <path>?" Stop and wait. Delete it only after a yes.
 6. After a no: keep the scratchpad. Update its status line to "formulated into <feature path> on <date>". Say "Scratchpad kept."
