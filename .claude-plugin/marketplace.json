@@ -5,7 +5,7 @@
   "plugins": [
     {
       "name": "bdd",
-      "source": "./",
+      "source": "./plugin",
       "description": "Behavior-Driven Development for Claude Code: discover (example mapping), formulate (Gherkin), automate (tests)."
     }
   ]

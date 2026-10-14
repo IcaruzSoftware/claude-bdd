@@ -5,7 +5,8 @@ from pathlib import Path
 import pytest
 from pytest_bdd import given, parsers, scenario, then, when
 
-SCRIPT = Path(__file__).resolve().parent.parent / 'scripts' / 'check_coverage.py'
+ROOT = Path(__file__).resolve().parent.parent
+SCRIPT = ROOT / 'plugin' / 'scripts' / 'check_coverage.py'
 
 
 @scenario('automate.feature', 'An example without a test')
@@ -188,7 +189,7 @@ def reports_orphan(result, ref):
 @when(parsers.parse('the hook definition in "{name}" is read'), target_fixture='hook')
 def hook_definition_is_read(name):
     # stdlib only: PyYAML is not in the dev env; the file is a flat list of key: value lines
-    text = (SCRIPT.parent.parent / name).read_text()
+    text = (ROOT / name).read_text()
     return {k.strip(' -'): v.strip() for k, _, v in (line.partition(':') for line in text.splitlines())}
 
 

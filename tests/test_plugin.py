@@ -8,6 +8,7 @@ import pytest
 from pytest_bdd import given, parsers, scenario, then, when
 
 ROOT = Path(__file__).resolve().parent.parent
+PLUGIN = ROOT / 'plugin'
 SKILLS = {'discover', 'formulate', 'automate'}
 
 
@@ -27,7 +28,9 @@ def test_no_hyphenated_command():
 
 
 def load(name):
-    return json.loads((ROOT / '.claude-plugin' / name).read_text(encoding='utf-8'))
+    # marketplace.json lives at the repo root, plugin.json in the plugin the marketplace installs
+    base = ROOT if name == 'marketplace.json' else PLUGIN
+    return json.loads((base / '.claude-plugin' / name).read_text(encoding='utf-8'))
 
 
 def install_command():
@@ -40,7 +43,7 @@ def skill_commands():
     """Slash commands Claude Code derives from the plugin: /<plugin>:<skill>."""
     plugin = load('plugin.json')['name']
     commands = set()
-    for skill_md in (ROOT / 'skills').glob('*/SKILL.md'):
+    for skill_md in (PLUGIN / 'skills').glob('*/SKILL.md'):
         name = re.search(
             r'^name:\s*(\S+)', skill_md.read_text(encoding='utf-8'), re.M
         ).group(1)
@@ -97,20 +100,21 @@ def skills_invoked_as(first, second, third):
 @then('the skills discover, formulate and automate are available')
 def skills_available():
     plugins = load('marketplace.json')['plugins']
-    assert (ROOT / plugins[0]['source']).resolve() == ROOT
-    assert {p.parent.name for p in (ROOT / 'skills').glob('*/SKILL.md')} == SKILLS
+    assert (ROOT / plugins[0]['source']).resolve() == PLUGIN
+    assert {p.parent.name for p in (PLUGIN / 'skills').glob('*/SKILL.md')} == SKILLS
     claude = shutil.which('claude')
     if not claude:
-        pytest.skip('claude CLI not on PATH, skipping "claude plugin validate ."')
-    result = subprocess.run(
-        [claude, 'plugin', 'validate', str(ROOT)], capture_output=True, text=True
-    )
-    assert result.returncode == 0, result.stdout + result.stderr
+        pytest.skip('claude CLI not on PATH, skipping "claude plugin validate"')
+    for path in (ROOT, PLUGIN):  # the marketplace, then the plugin it installs
+        result = subprocess.run(
+            [claude, 'plugin', 'validate', str(path)], capture_output=True, text=True
+        )
+        assert result.returncode == 0, result.stdout + result.stderr
 
 
 @then('no such command exists')
 def no_such_command(looked_for):
-    assert not (ROOT / 'commands').exists()
+    assert not (PLUGIN / 'commands').exists()
     assert looked_for not in skill_commands()
 
 

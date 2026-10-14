@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+. "$(dirname "$0")/../fixtures/coach-readme.sh"
 cat > README.md <<'EOF'
 # Coach app
 
@@ -13,14 +14,4 @@ within their group.
 
 Each coach leads exactly one group. A coach who takes over a second group
 must hand the first one to another coach.
-EOF
-cat > pyproject.toml <<'EOF'
-[project]
-name = "coach-app"
-version = "0.3.0"
-requires-python = ">=3.11"
-dependencies = ["flask>=3"]
-
-[dependency-groups]
-dev = ["pytest"]
 EOF

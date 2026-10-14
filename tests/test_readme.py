@@ -90,7 +90,7 @@ def readme_contains_terms():
 
 @then('they match the repo description and topics')
 def matches_description_and_topics():
-    plugin = json.loads((ROOT / '.claude-plugin' / 'plugin.json').read_text(encoding='utf-8'))
+    plugin = json.loads((ROOT / 'plugin' / '.claude-plugin' / 'plugin.json').read_text(encoding='utf-8'))
     metadata = (plugin['description'] + ' ' + ' '.join(plugin['keywords'])).lower().replace('-', ' ')
     for term in TERMS:
         assert term.lower().replace('-', ' ') in metadata, term

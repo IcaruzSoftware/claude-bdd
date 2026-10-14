@@ -1,6 +1,6 @@
 - id: bdd-coverage
   name: BDD example coverage
-  entry: scripts/check_coverage.py
+  entry: plugin/scripts/check_coverage.py
   language: script
   pass_filenames: false
   always_run: true

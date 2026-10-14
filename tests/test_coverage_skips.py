@@ -5,7 +5,8 @@ from pathlib import Path
 
 import pytest
 
-SCRIPT = Path(__file__).resolve().parent.parent / 'scripts' / 'check_coverage.py'
+ROOT = Path(__file__).resolve().parent.parent
+SCRIPT = ROOT / 'plugin' / 'scripts' / 'check_coverage.py'
 
 
 def test_eval_results_are_not_tests(tmp_path):

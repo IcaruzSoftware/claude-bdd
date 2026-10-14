@@ -58,7 +58,7 @@ def test_anna_opens_other_groups_workout():
 
 ### Keep tests in sync: pre-commit hook and CI
 
-In PLAIN mode (plain tests that name their example), `scripts/check_coverage.py` reports examples without a test and tests without an example. Run it as a pre-commit hook:
+In PLAIN mode (plain tests that name their example), `plugin/scripts/check_coverage.py` reports examples without a test and tests without an example. Run it as a pre-commit hook:
 
 ```yaml
 repos:

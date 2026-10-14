@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+. "$(dirname "$0")/../fixtures/coach-readme.sh"
 cat > README.md <<'EOF'
 # Coach-App
 
@@ -18,14 +19,4 @@ cat > docs/betrieb.md <<'EOF'
 
 Die App läuft als Flask-Dienst. Konfiguration über `config.toml`, Logs unter
 `/var/log/coach`. Neue Gruppen legt ein Admin im Backoffice an.
-EOF
-cat > pyproject.toml <<'EOF'
-[project]
-name = "coach-app"
-version = "0.3.0"
-requires-python = ">=3.11"
-dependencies = ["flask>=3"]
-
-[dependency-groups]
-dev = ["pytest"]
 EOF

@@ -9,8 +9,6 @@ dev = ["pytest", "pytest-bdd>=8"]
 
 [tool.uv]
 package = false
-# claude plugin eval refuses hard-linked files anywhere in the plugin dir, .venv included
-link-mode = "copy"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

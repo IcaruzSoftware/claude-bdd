@@ -5,21 +5,25 @@ and `features/automate.feature` has one `claude plugin eval` case here. The case
 checks the example, not the skill text: Given → scaffold (and prompt), When →
 prompt, Then → graders. Examples about files in this repo are pytest tests in
 `tests/`, not evals: `plugin.feature` (except its one eval, plugin-B1.1) and
-automate's coverage-script examples (R53, R59). Background and decisions:
-`docs/discovery/2026-10-13-evals.md`.
+automate's coverage-script examples (R53, R59).
 
 Evals run locally only. They need a Claude login and use your quota or API
 budget. CI (`.github/workflows/ci.yml`) runs `uv run pytest -q` and
-`scripts/check_coverage.py` on every push and pull request, not evals.
+`plugin/scripts/check_coverage.py` on every push and pull request, not evals.
 
 ## Run
 
 Quick run while working on a skill (one run per case, Haiku 5.5):
 
 ```bash
-claude plugin eval . --scaffold --ablation none --model claude-haiku-5-5 \
+./run-evals.sh --scaffold --ablation none --model claude-haiku-5-5 \
   --runs 1 --allow-tools Write Edit --no-publish
 ```
+
+`run-evals.sh` passes its arguments to `claude plugin eval`. That command only
+reads cases below the plugin root, and the evals must not be installed with the
+plugin, so the script copies `plugin/` and `evals/` into a temp dir and runs
+the eval there.
 
 - One skill: add `--tag discover` (or `formulate`, `automate`).
 - One rule: add `--tag R31`.
@@ -46,7 +50,7 @@ instead. With an API key, `--max-cost-usd 10` is the ceiling for a release run.
 
 1. Create `evals/<feature>-<ID>/case.yaml`, e.g. `evals/discover-B11.3/case.yaml`.
 2. Set `name: <feature>:<ID>`: the feature file's name without `.feature`, a
-   colon, and the example ID. `scripts/check_coverage.py` counts the example as
+   colon, and the example ID. `plugin/scripts/check_coverage.py` counts the example as
    covered only through this exact reference, so a typo shows up as `missing:`
    plus `orphan:`. Do not write such references anywhere else under `evals/`
    (this README included): the script would count them as coverage.
@@ -54,8 +58,11 @@ instead. With an API key, `--max-cost-usd 10` is the ceiling for a release run.
    `tags: [<feature>, R<n>]`, where `R<n>` is the example's rule.
 4. Seed state the example assumes with `context.scaffold_script: scaffold.sh`
    (bash, `set -euo pipefail`, executable). It starts in an empty directory with a
-   minimal environment and has 120 seconds. Write fixture files with heredocs;
-   never put a real `.feature` file under `evals/`, the coverage script would read it.
+   minimal environment and has 120 seconds. Start from a shared base project in
+   `evals/fixtures/` (`. "$(dirname "$0")/../fixtures/coach-web.sh"`), then write
+   only what the case changes, with heredocs. `scaffold_script` itself must stay
+   inside the case folder. Never put a real `.feature` file under `evals/`, the
+   coverage script would read it.
 5. Put the "When" into `execution.prompt`, invoking the skill explicitly
    (`/bdd:discover …`, `/bdd:formulate docs/discovery/…`), with the user's answer
    in the same prompt when the example continues a conversation. A case is a
@@ -101,13 +108,11 @@ instead. With an API key, `--max-cost-usd 10` is the ceiling for a release run.
 
 ## Hard links
 
-`claude plugin eval` refuses hard-linked files anywhere in the plugin directory,
-`.venv` included. `pyproject.toml` sets `[tool.uv] link-mode = "copy"` for that
-reason; if you recreate `.venv` with another tool, make sure it copies.
+`claude plugin eval` refuses hard-linked files anywhere in the plugin directory.
+`run-evals.sh` therefore makes real copies (`cp -r`), not links.
 
 ## automate cases
 
 The `automate-*` cases follow the same layout. PLAIN-mode cases seed a small
 project with its own test suite and use an `llm` grader to judge whether the new
-tests assert exactly the example's Then and blend into that suite (R13 of the
-evals scratchpad).
+tests assert exactly the example's Then and blend into that suite.
