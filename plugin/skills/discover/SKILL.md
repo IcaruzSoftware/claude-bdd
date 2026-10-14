@@ -1,15 +1,15 @@
 ---
 name: discover
 description: >-
-  When the user describes a feature with several rules without asking for an
-  example map, add the single line "Want an example map first? (/bdd:discover)"
-  to your reply, at most once per conversation, and continue the normal work; do
-  not start this skill. Step 1 of 3 of BDD: Example Mapping (Matt Wynne) in
-  writing. Writes a Markdown discovery scratchpad of rules, examples and
-  questions and folds in the user's answers until nothing is open. Use ONLY when
-  the user explicitly asks for the bdd discover skill, an example mapping, an
-  example map, a discovery scratchpad, or /bdd:discover. Never use it for
-  ordinary feature or bug requests.
+  Step 1 of 3 of BDD: Example Mapping (Matt Wynne) in writing. Writes a Markdown
+  discovery scratchpad of rules, examples and questions and folds in the user's
+  answers until nothing is open. Use ONLY when the user explicitly asks for the
+  bdd discover skill, an example mapping, an example map, a discovery
+  scratchpad, or /bdd:discover. Never use it for ordinary feature or bug
+  requests. When the user describes a feature with several rules without asking
+  for an example map, add the single line "Want an example map first?
+  (/bdd:discover)" to your reply, at most once per conversation, and continue
+  the normal work; do not start this skill.
 ---
 
 # discover
