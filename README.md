@@ -19,6 +19,33 @@ You turn a rough idea or untested code into confirmed business rules, then Gherk
 | `/bdd:formulate` | Turns the finished scratchpad into one Gherkin `.feature` file, then deletes the scratchpad after asking. |
 | `/bdd:automate` | Turns the feature file into tests: Cucumber-style step definitions for your BDD runner, or plain tests. |
 
+### All commands and flags
+
+| Command | What it does |
+|---|---|
+| `/bdd:discover <topic>` | Starts an example map for new behaviour (FORWARD, the default). |
+| `/bdd:discover --forward <topic>` | The same, stated explicitly. |
+| `/bdd:discover --backward <topic>` | Recovers the rules of existing code whose tests lag behind. Code is a witness, not a judge: rules taken from it stay `?` until you confirm them. |
+| `/bdd:discover <scratchpad path>` | Run again on an existing scratchpad: folds in your answers and keeps your edits. |
+| `/bdd:formulate [scratchpad path]` | Writes the feature file. Refuses while a rule is `?`, a `!` is not accepted or a question is open. |
+| `/bdd:formulate anyway` | Writes the feature file despite open rules; their examples are tagged `@wip` and get no tests yet. |
+| `/bdd:automate <feature path>` | Writes and runs the tests for new behaviour (FORWARD): they are expected to start red. |
+| `/bdd:automate --backward <feature path>` | Writes tests for existing code: green confirms a rule, red is a finding in the code. |
+| `/bdd:automate anyway` | Writes tests although the scratchpad still has open rules; their examples stay `@wip`. |
+
+**Answering a scratchpad**, in the file or in chat:
+
+| Answer | Effect |
+|---|---|
+| `R3: no, only admins` | Corrects rule R3 and confirms it. |
+| `ok R3` | Confirms R3 as written. |
+| `accept all !` | Confirms every rule Claude marked `!` (sure, with evidence). |
+| Editing a rule in the file | Counts as confirming it. |
+
+**Switching the test style:** `automate` writes plain tests into an existing test suite and step definitions when the project uses a BDD runner. Say `use pytest-bdd` (or another runner) to switch; it asks before adding a dependency.
+
+**Tags in feature files:** `@wip` marks an example of a rule that is not confirmed yet; `@review` marks an example that is checked by review instead of a test. The coverage script reports both and does not count them as gaps.
+
 The plugin's own behaviour is specified the same way, in [`features/`](features/) (dogfooding). A real scratchpad is kept in [`docs/discovery/`](docs/discovery/).
 
 ## Worked example: from Example Mapping to Gherkin to a pytest-bdd test
