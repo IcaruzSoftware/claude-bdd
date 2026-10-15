@@ -17,6 +17,8 @@ The project decides how.
 
 Run only this step. Never start discover or formulate from here.
 
+Sections 1 to 3 are your exploration of the project. Start no other exploration (no Explore or Plan agent, no survey of the codebase). In section 4, read only the code and test helpers the tests need. If the project's rules require a plan first, write it from what sections 1 to 3 found.
+
 The user's arguments are: `$ARGUMENTS` (a flag and a feature path, or empty).
 
 ## 1. Preconditions
@@ -66,6 +68,8 @@ The direction comes only from a flag, the same flags as discover. Never guess it
 
 Write one test per example. Cover every example of the feature, except the `@wip` examples.
 
+Test each example at the lowest level that can check its Then: a unit or API test when code below the UI decides the outcome; an end-to-end UI test only when the Then is about what the UI shows or does. The project's test rules win (section 1, step 8). In RUNNER mode the step definitions drive that level.
+
 RUNNER mode:
 
 1. Write step definitions in the runner's own style.
@@ -97,21 +101,27 @@ BACKWARD mode:
 1. Test the confirmed rule, not what the code does.
 2. Never change a test or its assertion to match the code.
 
+Other agents:
+
+1. If you hand writing the tests to other agents, they write the tests but do not run them; you run section 5 yourself (in PLAIN mode the coverage script first, as above). Give each brief these limits: the test level, no production code in FORWARD mode, never bend a test in BACKWARD mode, do not run the tests.
+
 ## 5. Run once
 
-1. Run the tests with the project's test command.
+1. Run only this feature's tests, with the project's test command. Never run the whole suite. PLAIN mode: the test files you wrote or changed, plus existing test files that name this feature's examples. RUNNER mode: only the automated feature, e.g. `behave features/workouts.feature`, `npx cucumber-js features/workouts.feature`, `pytest tests/step_defs/test_workouts.py`.
 2. Look at every red test. It must fail on the business assertion.
 3. Red for the wrong reason means a fault in the test code itself: a typo, a wrong import of a test helper, a missing fixture, a setup crash, a missing marker registration. Example: `ModuleNotFoundError` for a test helper module.
 4. Fix wrong reasons in the test code. Do not report those tests as red.
 5. A test that fails only because the planned production symbol does not exist yet is not red for the wrong reason. This happens in FORWARD mode. First check that the test asserts exactly the example's Then; fix the test if not. Example: for "sharing:B1.1" the test must assert that Carl sees the shared workout in his list. Report it as "red: <symbol> does not exist yet", e.g. "red: share_workout does not exist yet". Never fix it by writing production code.
 6. After fixing wrong reasons, run once more. Report only the last run.
+7. Run at most twice: once, and once more after fixing wrong reasons.
+8. If a test still fails for a wrong reason after the second run, do not run again. Report it as "broken: <ref> (<error>)", not as red.
 
 ## 6. Check the gaps
 
 RUNNER mode (do not run the coverage script; runners fail on undefined steps):
 
 1. Check that every `.feature` file in the project is bound by some test module. Report each unbound one: "<path> is not bound".
-2. Compare, per feature, the number of examples that are not `@wip` with the number of scenarios the runner ran. Report each missing example by its ID.
+2. For the feature you automated, compare the number of its examples that are not `@wip` with the number of its scenarios the runner ran. Report each missing example by its ID.
 
 PLAIN mode (the coverage script ran in section 4):
 
@@ -145,6 +155,7 @@ Always list the `@wip` examples as work in progress, e.g. "wip: workouts:B4.1 (R
 - Never write production code in FORWARD mode.
 - Never bend a test to fit the code; in BACKWARD mode a red test is a finding.
 - Never report a test as red when it fails for the wrong reason.
+- Never run the whole suite. Run only this feature's tests, at most twice.
 - Never add a dependency or build a second suite without asking first.
 - Never run the tests while the coverage script reports an `error:` line.
 - Never start discover or formulate.

@@ -181,6 +181,20 @@ Feature: Automate
       Then the test follows the boundary-test rule
       And mentions "billing:B2.1"
 
+  @R62
+  Rule: automate tests each example at the lowest level that can check its Then
+    A unit or API test when code below the UI decides the outcome. An
+    end-to-end UI test only when the Then is about what the UI shows or does.
+    The project's test rules win (R58).
+
+    @B62.1
+    Example: A rule the API decides
+      Given a web project with API tests and Playwright end-to-end tests
+      And the API decides that coach Anna gets "not found" for Carl's workout
+      When automate writes the test for that example
+      Then it writes an API test
+      And no Playwright test
+
   @R59
   Rule: The README shows how to run the coverage script in a pre-commit hook or in CI
     In PLAIN mode nothing else keeps spec and tests in sync without Claude.
@@ -221,7 +235,18 @@ Feature: Automate
       And no production code was written
 
   @R56
-  Rule: automate runs the suite once and reports a summary
+  Rule: automate runs the feature's tests at most twice and reports a summary
+    automate runs only the tests of the feature it automates, never the whole
+    suite: once, and once more after fixing wrong reasons. In PLAIN mode these
+    are the test files it wrote or changed and the existing ones that name the
+    feature's examples; in RUNNER mode the runner runs only that feature. A
+    test that still fails for a wrong reason after the second run is reported
+    as "broken: <ref> (<error>)", not as red. When it hands the writing of
+    tests to other agents, they write the tests but do not run them, and each
+    brief carries the test level (R62) and the rules of R54 and R55. Sections 1
+    to 3 of the skill are automate's exploration of the project: it starts no
+    other exploration, and a plan the project's rules require is written from
+    what it found there.
 
     @B56.1
     Example: A green test in FORWARD mode
@@ -240,8 +265,14 @@ Feature: Automate
     @B56.3
     Example: A rerun after fixing a wrong reason
       Given the test for "workouts:B2.1" failed on a typo in the test
-      When automate fixes the typo and runs the suite again
+      When automate fixes the typo and runs its tests again
       Then the report shows only the second run
+
+    @B56.4
+    Example: Only the new tests run
+      Given the project has the test file "tests/test_groups.py"
+      When automate writes "tests/test_workouts.py" and runs it
+      Then no test command runs "tests/test_groups.py"
 
   @R57
   Rule: A red test must be red for the right reason

@@ -16,7 +16,7 @@ You turn a rough idea or untested code into confirmed business rules, then Gherk
 | Skill | What it does |
 |---|---|
 | `/bdd:discover` | Example Mapping in writing: a Markdown scratchpad of rules, examples and questions that you correct until nothing is open. |
-| `/bdd:formulate` | Turns the finished scratchpad into one Gherkin `.feature` file, then deletes the scratchpad after asking. |
+| `/bdd:formulate` | Turns the finished scratchpad into one Gherkin `.feature` file (one per part if discover split the story), then deletes the scratchpad after asking. |
 | `/bdd:automate` | Turns the feature file into tests: Cucumber-style step definitions for your BDD runner, or plain tests. |
 
 ### All commands and flags

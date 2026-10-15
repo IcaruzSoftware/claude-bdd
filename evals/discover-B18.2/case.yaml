@@ -15,6 +15,13 @@ graders:
   pattern: split
   flags: i
   target: last_message
+- name: split-section-in-scratchpad
+  type: regex
+  pattern: '^## Split\s+- [a-z0-9-]+: R\d+.*\n- [a-z0-9-]+: R\d+'
+  flags: m
+  target:
+    source: file
+    path: docs/discovery/2026-10-13-coach-app.md
 - name: split-names-two-stories
   type: llm
   focus: last_message

@@ -8,7 +8,7 @@ execution:
 graders:
   - name: asks-language-once
     type: regex
-    pattern: 'Scratchpad in German or English\?'
+    pattern: 'Scratchpad (?:and|und) [Ff]eature[- ](?:file|Datei|File) (?:in|auf) (?:German|Deutsch) (?:or|oder) (?:English|Englisch)\?'
     match: "count:1"
     target: last_message
   - name: no-scratchpad-yet

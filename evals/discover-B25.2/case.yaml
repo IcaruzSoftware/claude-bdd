@@ -12,7 +12,7 @@ execution:
 graders:
 - name: asks-language-once
   type: regex
-  pattern: Scratchpad in German or English\?
+  pattern: 'Scratchpad and feature file in German or English\?'
   match: count:1
   target: last_message
 - name: no-scratchpad-written

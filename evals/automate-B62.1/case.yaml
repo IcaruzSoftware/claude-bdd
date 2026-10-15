@@ -1,0 +1,35 @@
+schema_version: "1.1"
+name: automate:B62.1
+description: "A rule the API decides (features/automate.feature @B62.1)"
+tags: [automate, R62]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: '/bdd:automate --backward features/workouts.feature'
+  max_turns: 20
+  timeout_seconds: 420
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit]
+graders:
+  - name: api-test-for-b1-1
+    type: tool_used
+    tool: Write
+    input_match: '^(?=[\s\S]*"file_path"\s*:\s*"[^"]*/tests/api/)(?=[\s\S]*workouts:B1\.1)'
+    min: 1
+  - name: nothing-written-to-e2e
+    type: tool_used
+    tool: Write
+    input_match: '"file_path"\s*:\s*"[^"]*/e2e/'
+    min: 0
+    max: 0
+  - name: nothing-edited-in-e2e
+    type: tool_used
+    tool: Edit
+    input_match: '"file_path"\s*:\s*"[^"]*/e2e/'
+    min: 0
+    max: 0
+  - name: no-playwright-test
+    type: tool_used
+    tool: Write
+    input_match: 'playwright|page\.goto'
+    min: 0
+    max: 0

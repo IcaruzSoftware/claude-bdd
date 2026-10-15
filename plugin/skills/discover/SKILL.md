@@ -33,9 +33,10 @@ Write no code and no tests in this skill. If the user explicitly overrides, name
 ## 2. Language
 
 1. Check the language of the user's messages and of the repo's docs.
-2. If either is not English, ask once in your reply: "Scratchpad in <Language> or English?" (for German: "Scratchpad in German or English?"). Otherwise write the scratchpad in English.
+2. If either is not English, ask once in your reply: "Scratchpad and feature file in <Language> or English?" (for German: "Scratchpad and feature file in German or English?"). Otherwise write the scratchpad in English. If the user already named the language, do not ask; use it.
 3. After asking, stop and wait for the answer. Ask this only once per scratchpad.
-4. In a scratchpad in another language, keep the format in English: the title `# Example Map`, the header keys `**Mode:**`, `**Delta to:**` and `**Status:**`, the markers and the IDs. Translate only the content.
+4. In a scratchpad in another language, keep the format in English: the title `# Example Map`, the header keys `**Mode:**`, `**Delta to:**`, `**Language:**` and `**Status:**`, the `## Split` heading and the word `none`, the markers and the IDs. Translate only the content.
+5. Write the answer into the scratchpad header as `**Language:** <Language>`, with the language's English name, also in a translated scratchpad, e.g. `**Language:** German`. If the user named the language, write that language. If everything is English, write `**Language:** English`. formulate takes the feature file's language from this line.
 
 ## 3. Mode
 
@@ -87,6 +88,7 @@ Follow this format exactly. The content is an example; replace it with the real 
 
 **Mode:** <FORWARD (new behaviour) | BACKWARD (--backward; code: <path>, tests: <path or none>)>
 **Delta to:** <features/<slug>.feature — only in a delta scratchpad, else delete this line>
+**Language:** <English | the language the user chose>
 **Status:** <n> rules (<a> ✓, <b> !, <c> ?) · <m> questions open
 
 **How to answer:** edit this file, or reply in chat by ID, e.g. `R3: no, only admins`. A bare `ok` next to an ID confirms it. `accept all !` confirms every `!` at once.
@@ -136,7 +138,7 @@ Evidence: README.md, section "Groups"
 8. Write each example as `- B<n>.<n> The one where <concrete situation> → <outcome>`.
 9. Use real names and values: "The one where coach Anna opens Carl's workout from group B", not "A coach opens a workout of another group".
 10. Never write Given/When/Then in the scratchpad.
-11. Fill in the header: story, mode, status counts, how to answer, markers.
+11. Fill in the header: story, mode, language, status counts, how to answer, markers.
 
 ## 8. Fold in answers
 
@@ -162,6 +164,9 @@ After writing and after every fold, check Wynne's signals:
 1. More open questions than rules: say "This idea is not ready yet" and why. Do not suggest formulate.
 2. More than 12 rules: propose splitting the story, and name the split.
 3. More than about 50 items in total: propose splitting the story.
+4. When you propose a split, also write it into the scratchpad as a section `## Split`, placed before `## 🟥 Open questions`. Write one line per part: `- <part-slug>: <rule IDs>`, e.g. `- workouts-access: R1, R2, R5`. The part slug is kebab-case. formulate writes one feature file per part. Not in a delta scratchpad: there, propose the split in the reply only.
+5. To keep one story, the user replaces the lines with `none`.
+6. If the scratchpad has a `## Split` section already, do not propose a split again (skip steps 2 to 4). Keep the user's edits in it. If it lists parts (not `none`), add each new rule's ID to a part.
 
 ## 10. Reply
 
@@ -171,6 +176,7 @@ After writing and after every fold, check Wynne's signals:
 4. When every rule that is not dropped is `✓` and no question is open, say: "The scratchpad is ready for formulate. Run /bdd:formulate."
 5. In BACKWARD mode, add: "Then run /bdd:automate --backward <feature path>." The feature path is the `**Delta to:**` path, else `features/<slug>.feature`.
 6. If the user overrides (e.g. "write the tests anyway"), add the sentence from section "Order of the stages", step 3, word for word: "Run `/bdd:formulate anyway`, then `/bdd:automate`. …"
+7. If you wrote a `## Split` section, say so, and that the user can keep one story by replacing its lines with `none`.
 
 ## 11. Order of the stages
 

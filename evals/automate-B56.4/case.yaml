@@ -1,0 +1,29 @@
+schema_version: "1.1"
+name: automate:B56.4
+description: "Only the new tests run (features/automate.feature @B56.4) - runs tests: needs --allow-tools Bash"
+tags: [automate, R56, needs-bash]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: '/bdd:automate --backward features/workouts.feature'
+  max_turns: 25
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+graders:
+  - name: ran-the-new-tests
+    type: tool_used
+    tool: Bash
+    input_match: '"command"\s*:\s*"(?:[^"\\]|\\.)*unittest(?:[^"\\|;&]|\\.)*test_workouts'
+    min: 1
+  - name: never-ran-test-groups
+    type: tool_used
+    tool: Bash
+    input_match: '"command"\s*:\s*"(?:[^"\\]|\\.)*(?:unittest|pytest)(?:[^"\\]|\\.)*test_groups'
+    min: 0
+    max: 0
+  - name: never-ran-the-whole-suite
+    type: tool_used
+    tool: Bash
+    input_match: '"command"\s*:\s*"(?:[^"\\]|\\.)*(?:-m\s+(?:unittest|pytest)|(?<![\w-])pytest(?=[\s"]))(?!(?:[^"\\|;&]|\\.)*test_workouts)'
+    min: 0
+    max: 0

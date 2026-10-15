@@ -128,6 +128,9 @@ Feature: Discover
 
   @R18
   Rule: discover reads Wynne's signals: too many questions, too many rules, too many items
+    A proposed split goes into a "## Split" section of the scratchpad, except
+    in a delta scratchpad; "none" keeps one story, no new split is proposed
+    while the section exists, and new rules go to a part.
 
     @B18.1
     Example: The idea is not ready
@@ -139,6 +142,7 @@ Feature: Discover
     Example: The story is too big
       Given a scratchpad with 15 rules
       Then discover proposes splitting the story
+      And writes the split into the scratchpad as a "## Split" section
 
   @R19
   Rule: For a topic that already has a feature file, discover writes a delta scratchpad
@@ -249,19 +253,27 @@ Feature: Discover
 
   @R25
   Rule: The scratchpad is English unless the user chooses another language
-    discover asks when the user writes in another language or the repo is in
-    another language, the same way formulate does for the feature file. The
-    format stays English in every language: header keys, markers and IDs.
+    discover asks once when the user writes in another language or the repo is
+    in another language, unless the user already named the language. The answer
+    covers the scratchpad and the feature file: discover writes it into the
+    scratchpad header, and formulate takes it from there without asking again.
+    The format stays English in every language: header keys, markers and IDs.
 
     @B25.1
     Example: A German-speaking user is asked once
       Given the user writes in German
       When discover starts
-      Then it asks once "Scratchpad in German or English?"
+      Then it asks once "Scratchpad and feature file in German or English?"
 
     @B25.2
     Example: A German repo with an English-speaking user
       Given the user writes in English
       And the repo docs are in German
       When discover starts
-      Then it asks once "Scratchpad in German or English?"
+      Then it asks once "Scratchpad and feature file in German or English?"
+
+    @B25.3
+    Example: The answer is kept in the scratchpad
+      Given the user writes in German
+      When the user answers "German"
+      Then the scratchpad header has the line "**Language:** German"

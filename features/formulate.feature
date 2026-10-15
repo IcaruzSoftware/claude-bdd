@@ -114,7 +114,8 @@ Feature: Formulate
   @R36
   Rule: One feature file per story in features/, unless the project already has a place for features
     features/ is the default of behave and cucumber-js; pytest-bdd and
-    playwright-bdd point there with one setting.
+    playwright-bdd point there with one setting. A story that discover split
+    (its "## Split" section) gets one file per part.
 
     @B36.1
     Example: The default place
@@ -127,6 +128,16 @@ Feature: Formulate
       Given the project keeps feature files in "src/test/resources/"
       When formulate writes the story "workouts"
       Then the file goes into "src/test/resources/"
+
+    @B36.3
+    Example: A split story
+      Given the scratchpad for "workouts" has a "## Split" section
+      And it names "workouts-access: R1, R2" and "workouts-admin: R3"
+      When formulate writes the story
+      Then it writes "features/workouts-access.feature" with R1 and R2 and their examples
+      And "features/workouts-admin.feature" with R3 and its examples
+      And the rule and example IDs are unchanged
+      And there is no "features/workouts.feature"
 
   @R40
   Rule: In a monorepo the feature file lives in the module it describes
@@ -141,7 +152,9 @@ Feature: Formulate
       Then the file goes into "billing_assistant/features/"
 
   @R37
-  Rule: Gherkin is English unless the repo is in another language and the user chooses it
+  Rule: Gherkin is English unless the user chooses another language
+    The user chooses in discover, or in formulate when the repo is in another
+    language.
 
     @B37.1
     Example: An English repo
@@ -152,8 +165,17 @@ Feature: Formulate
     @B37.2
     Example: A German repo
       Given the repo is in German
+      And the scratchpad has no "**Language:**" line
       When formulate writes a feature
       Then it asks whether to write German with "# language: de" or English
+
+    @B37.3
+    Example: The language was chosen in discover
+      Given the repo is in German
+      And the scratchpad header has the line "**Language:** German"
+      When formulate writes a feature
+      Then the feature is in German with "# language: de" as its first line
+      And formulate does not ask about the language
 
   @R38
   Rule: Steps are declarative and in domain language

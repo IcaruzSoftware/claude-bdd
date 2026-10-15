@@ -1,0 +1,19 @@
+schema_version: "1.1"
+name: discover:B25.3
+description: "The answer is kept in the scratchpad (features/discover.feature @B25.3)"
+tags: [discover, R25]
+execution:
+  prompt: "/bdd:discover Mach bitte ein Example Mapping für das Teilen von Workouts in meiner Coach-App: Coaches sollen Workouts an Athleten ihrer Gruppe schicken können. Scratchpad und Feature-Datei bitte auf Deutsch."
+  max_turns: 15
+graders:
+  - name: language-in-header
+    type: tool_used
+    tool: Write
+    input_match: '# Example Map[\s\S]*\*\*Language:\*\* German'
+    min: 1
+  - name: no-language-question
+    type: regex
+    pattern: 'German or English\?|Deutsch oder Englisch\?'
+    flags: i
+    match: not_contains
+    target: last_message

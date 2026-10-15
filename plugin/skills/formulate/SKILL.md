@@ -10,7 +10,7 @@ description: >-
 
 # formulate
 
-Turns a finished scratchpad into one Gherkin feature file.
+Turns a finished scratchpad into one Gherkin feature file, or one per part of a split story.
 The feature file is the lasting statement of the business rules.
 The scratchpad was only for thinking.
 
@@ -41,16 +41,18 @@ Write no code and no tests in this skill.
 3. Monorepo: a module is the top-level folder the story's code lives in. In BACKWARD mode it is the folder of the rules' `Source:` paths. Own build files per folder (`pyproject.toml`, `package.json`, `pom.xml`, `build.gradle`) are a hint, not a condition. If the story's code lives in one top-level folder next to other code folders, the feature file goes there: `<module>/features/<slug>.feature`. Example: a story about the invoice assistant whose code is in `billing_assistant/` goes into `billing_assistant/features/`.
 4. The project already keeps feature files somewhere (e.g. `src/test/resources/`): write there.
 5. Otherwise: `features/<slug>.feature`. Example: story "workouts" gives `features/workouts.feature`.
-6. One feature file per story.
+6. One feature file per story; a split story gets one per part (step 9).
 7. The slug is the scratchpad's slug without the date.
 8. Before writing a new file, check that no other `.feature` file in the repo has the same name. If one does, ask: "<path> exists already. Which slug instead of <slug>?" Stop and wait.
+9. Split story: the scratchpad has a `## Split` section with parts (not `none`). Write one feature file per part. Each file holds only its part's rules and their examples, with the IDs unchanged. The part's slug replaces the scratchpad's slug. Steps 3 to 8 apply to each file. Not for a delta scratchpad. If a rule that is not dropped is in no part or in two parts, ask which part it belongs to. Stop and wait. Example: `- workouts-access: R1, R2` gives `features/workouts-access.feature` with R1 and R2.
 
 ## 4. Language
 
-1. Check the language of the repo (docs, comments, existing feature files).
-2. If the repo is in English, write the feature in English.
-3. If the repo is in another language, ask once: "Feature in <Language> with \"# language: <code>\" or in English?" (for German: "Feature in German with \"# language: de\" or in English?"). Stop and wait.
-4. For a non-English feature, make `# language: <code>` the first line and use that language's Gherkin keywords.
+1. Delta scratchpad: keep the language of the existing feature file; skip steps 2 to 4. Otherwise, if the scratchpad header has a `**Language:**` line, use it without asking. `English`: write the feature in English. Another language: write it in that language (step 5). Example: `**Language:** German` gives `# language: de`.
+2. Without that line, check the language of the repo (docs, comments, existing feature files).
+3. If the repo is in English, write the feature in English.
+4. If the repo is in another language, ask once: "Feature in <Language> with \"# language: <code>\" or in English?" (for German: "Feature in German with \"# language: de\" or in English?"). Stop and wait.
+5. For a non-English feature, make `# language: <code>` the first line and use that language's Gherkin keywords.
 
 ## 5. Vocabulary
 
@@ -93,11 +95,13 @@ Feature: Workouts
 
 ## 7. Confirm
 
-1. Show the feature file path and a short summary (rules and example counts).
-2. Ask: "Please review <path>. Confirm the feature file?" Stop and wait.
+1. Show the feature file path and a short summary (rules and example counts). With a split, show every path.
+2. Ask: "Please review <path>. Confirm the feature file?" Stop and wait. With a split, ask once for all files: "Please review <path>, <path>. Confirm the feature files?"
 3. If the user asks for changes, apply them and ask again.
 
 ## 8. After the user confirms: the scratchpad
+
+With a split, do this section once, after the user has confirmed all feature files.
 
 First read the scratchpad's `**Mode:**` line. The last line below needs it, and the scratchpad may be gone by then.
 
@@ -120,7 +124,7 @@ Read the two settings. Each is the text `true` or `false`.
 4. If ask_before_delete is exactly `false`: delete the scratchpad without asking. Say "Deleted <path>."
 5. Any other value of ask_before_delete means on. Ask: "Delete the scratchpad <path>?" Stop and wait. Delete it only after a yes.
 6. After a no: keep the scratchpad. Update its status line to "formulated into <feature path> on <date>". Say "Scratchpad kept."
-7. Finish with: "Next step: /bdd:automate <feature path>." If the Mode line says BACKWARD, finish with: "Next step: /bdd:automate --backward <feature path>.", e.g. "Next step: /bdd:automate --backward features/workouts.feature."
+7. Finish with: "Next step: /bdd:automate <feature path>." If the Mode line says BACKWARD, finish with: "Next step: /bdd:automate --backward <feature path>.", e.g. "Next step: /bdd:automate --backward features/workouts.feature." With a split, name all feature files and say to automate them one at a time: "Next step: /bdd:automate <first feature path>." (or the `--backward` variant).
 
 ## Never
 
